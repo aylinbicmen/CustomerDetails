@@ -1,0 +1,129 @@
+﻿@using CustomerDetails.Data.db;
+@{
+    ViewData["Title"] = "Müşteri Ekle";
+    List<AddressType> addressTypes = ViewBag.AddressTypes;
+}
+
+<h1>Müşteri Ekle</h1>
+<hr />
+
+<form asp-controller="Customer" asp-action="Add" method="post" class="row container">
+    <div class="col-md-6 mb-3">
+        @*Zorunlu alandır - rakam kullanılamaz*@
+        <label for="name" class="form-label fw-bold">Ad</label>
+        <input type="text" class="form-control" id="Name" name="Name" pattern="[a-zA-Z]+" required>
+    </div>
+    <div class="col-md-6 mb-3">
+        @*Zorunlu alandır - rakam kullanılamaz*@
+        <label for="surname" class="form-label fw-bold">Soyad</label>
+        <input type="text" class="form-control" id="Surname" name="Surname" pattern="[a-zA-Z]+" required>
+    </div>
+    <div class="col-md-6 mb-3">
+        @*Zorunlu alandır - e-posta kontrolü vardır*@
+        <label for="email" class="form-label fw-bold">E-posta Adresi</label>
+        <input type="email" class="form-control" id="Email" name="Email" required>
+    </div>
+    <div class="col-md-6 mb-3">
+        @*Zorunlu alandır - 10 karakter olmak zorundadır - sadece rakamlardan oluşmalıdır*@
+        <label for="phone" class="form-label fw-bold">Telefon Numarası</label>
+        <input type="text" class="form-control" id="Phone" name="Phone" pattern="[0-9]{10}" required>
+    </div>
+    <div class="col-md-6 mb-3">
+        @*Zorunlu alandır - tarih seçimi için takvim vardır*@
+        <label for="birtdate" class="form-label fw-bold">Doğum Tarihi</label>
+        <input type="date" class="form-control" id="BirthDate" name="BirthDate" required>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="h-100 d-flex justify-content-center align-items-center">
+            @*Müşteri adres eklemek zorunda değildir ama eklemek isterse bu checkbox'ı seçmelidir*@
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="AddAddress">
+                <label class="form-check-label fw-bold" for="addaddress">Adres Ekle</label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 mb-3">
+        @*Pasif olarak gelmektedir ama adres ekle checkbox'ı seçilirse aktif hale gelir - aktif hale geldiğinde zorunu alan olur*@
+        <label for="address" class="form-label fw-bold">Adres</label>
+        <input type="text" class="form-control" id="Address" name="Address" disabled>
+    </div>
+    <div class="col-md-12 mb-3">
+        @*Pasif olarak gelmektedir ama adres ekle checkbox'ı seçilirse aktif hale gelir - aktif hale geldiğinde zorunu alan olur*@
+        <label for="addresstype" class="form-label fw-bold">Adres Tipi</label>
+        @Html.DropDownList("AddressTypeId",new SelectList(addressTypes,"Id","Type"),new { @class = "form-control",@disabled = "disabled"})
+    </div>
+    <div class="col-md-12 mb-3">
+        @*Pasif olarak gelmektedir ama dropdown'dan bireysel seçeneğinin seçilmesi ile aktif hale gelir - aktif hale geldiğinde zorunu alan olur - 11 karakter olmak zorundadır - sadece rakamlardan oluşmalıdır*@
+        <label for="identityno" class="form-label fw-bold">TC Kimlik No</label>
+        <input type="text" class="form-control" id="IdentityNo" name="IdentityNo" pattern="[0-9]{11}" disabled>
+    </div>
+    <div class="col-md-6 mb-3">
+        @*Pasif olarak gelmektedir ama dropdown'dan kurumsal seçeneğinin seçilmesi ile aktif hale gelir - aktif hale geldiğinde zorunu alan olur - 10 karakter olmak zorundadır - sadece rakamlardan oluşmalıdır*@
+        <label for="taxno" class="form-label fw-bold">Vergi No</label>
+        <input type="text" class="form-control" id="TaxNo" name="TaxNo" pattern="[0-9]{10}" disabled>
+    </div>
+    <div class="col-md-6 mb-3">
+        @*Pasif olarak gelmektedir ama dropdown'dan kurumsal seçeneğinin seçilmesi ile aktif hale gelir - aktif hale geldiğinde zorunu alan olur - rakam kullanılamaz*@
+        <label for="taxoffice" class="form-label fw-bold">Vergi Dairesi</label>
+        <input type="text" class="form-control" id="TaxOffice" name="TaxOffice" pattern="[a-zA-Z]+" disabled>
+    </div>
+    <input hidden id="IsActive" name="IsActive" value="true" /> @*Müşteri ilk eklendiğinde her zaman aktif durumdadır. Bu bilgi hidden input ile gönderilir*@
+    <div class="row justify-content-center m-4">
+        <button type="submit" class="btn btn-primary col-2 m-2">Ekle</button>
+        <a type="button" class="btn btn-primary col-2 m-2" asp-controller="Home" asp-action="Index">Geri Git</a>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+        crossorigin="anonymous"></script>
+
+<script>
+
+    $(function () {
+        //Inputların zorunlu, pasif ve aktif olması olaylarının kontrolleri sağlanır.
+        $('#AddressTypeId').append('<option value="0" selected>Please Select</option>');
+
+        $('#AddAddress').click(function () {
+            if ($(this).is(':checked')){
+                $('#AddressTypeId').removeAttr('disabled').attr('required', true);
+                $('#Address').removeAttr('disabled').attr('required', true);
+
+                $('#AddressTypeId').change(function () {
+
+                    let addressValue = $('#AddressTypeId option:selected').text();
+
+                    if(addressValue == 'Bireysel'){
+                        $('#IdentityNo').removeAttr('disabled').attr('required', true);
+
+                        $("#TaxNo").attr("disabled", true).removeAttr('required').val('');
+                        $("#TaxOffice").attr("disabled", true).removeAttr('required').val('');
+                    }
+                    else if(addressValue == 'Kurumsal'){
+                        $('#TaxNo').removeAttr('disabled').attr('required', true);
+                        $('#TaxOffice').removeAttr('disabled').attr('required', true);
+
+                        $("#IdentityNo").attr('disabled', true).removeAttr('required').val('');
+                    }
+                    else{
+                        ClearAllFields();
+                    }
+
+                });
+            }
+            else{
+                ClearAllFields();
+            }
+        });
+    });
+
+    //Tüm alanların sayfanın ilk açıldığındaki haline gelmesi için kullanılır.
+    function ClearAllFields() {
+        $('#AddressTypeId').attr('disabled', true).removeAttr('required').val('0');
+        $('#Address').attr('disabled', true).removeAttr('required').val('');
+        $('#IdentityNo').attr('disabled', true).removeAttr('required').val('');
+        $('#TaxNo').attr('disabled', true).removeAttr('required').val('');
+        $('#TaxOffice').attr('disabled', true).removeAttr('required').val('');
+        $('#AddAddress').prop("checked", false);
+    }
+</script>

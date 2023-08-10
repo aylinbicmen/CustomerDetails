@@ -1,0 +1,53 @@
+﻿@using CustomerDetails.Data.db;
+@model IEnumerable<CustomerDetails.Data.db.Customer>
+
+@{
+    ViewData["Title"] = "Tüm Müşteriler";
+
+    int i = 1; //tablo içerisinde satır numarasını göstermek için kullanılmaktadır. Değeri foreach döngüsü içerisinde artırılmakdır.
+}
+
+@*Tablo içerisinde müşteri adı-soyadı, e-posta adresi ve telefon numarası gösterilmektedir. Aynı zamanda düzenleme, detay gösterme ve silme işlemleri için linkler yer almaktadır.*@
+
+<h1>Tüm Müşteriler</h1>
+<hr />
+
+<form class="row">
+    <div class="col-md-3 mb-3">
+        <input type="text" class="form-control" name="SearchString" value="@ViewData["CurrentFilter"]" id="SearchString" placeholder="Ara...">
+    </div>
+    <div class="col-md-3 mb-3">
+        <button type="submit" class="btn btn-primary">Ara</button>
+        <a class="btn btn-outline-primary" asp-action="All" asp-controller="Home">Tüm Müşteriler</a>
+    </div>
+</form>
+
+<table class="table table-primary table-hover">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"><a asp-action="All" asp-controller="Home" asp-route-sortOrder="@ViewData["NameSortParm"]" class="text-dark text-decoration-none">Ad Soyad <i class="fa-solid fa-caret-up"> </i><i class="fa-solid fa-caret-down"></i></a></th>
+            <th scope="col">E-posta Adresi</th>
+            <th scope="col">Telefon Numarası</th>
+            <th scope="col">İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Customer c in Model)
+        {
+            <tr>
+                <th scope="row">@i</th>
+                <td>@c.Name @c.Surname</td>
+                <td>@c.Email</td>
+                <td>@c.Phone</td>
+                <td>
+                    @Html.ActionLink("Düzenle","Edit","Customer",new {id=c.Id}) |
+                    @Html.ActionLink("Detaylar", "Details","Home", new {id=c.Id}) |
+                    @Html.ActionLink("Sil", "Delete","Customer", new {id=c.Id})
+                </td>
+            </tr>
+
+            i++;
+        }        
+    </tbody>
+</table>

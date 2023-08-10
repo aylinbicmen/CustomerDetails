@@ -1,0 +1,26 @@
+﻿@using CustomerDetails.Data.db;
+@{
+    ViewData["Title"] = "Müşteri Sil";
+
+    Customer customer = ViewBag.Customer;
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="text-center card-title">Müşteriyi Silmek İstediğinizden Emin Misiniz?</h5>
+
+        <div class="m-3 text-center">
+            <p><span class="fw-bold text-muted">Ad Soyad: </span><span class="card-text">@customer.Name @customer.Surname</span></p>
+            <p><span class="fw-bold text-muted">E-posta Adresi: </span><span class="card-text">@customer.Email</span></p>
+            <p><span class="fw-bold text-muted">Telefon Numarası: </span><span class="card-text">@customer.Phone</span></p>
+        </div>
+
+    </div>
+    <form asp-action="Delete" asp-controller="Customer" method="post">
+        <input hidden id="Id" name="Id" value="@customer.Id" />
+        <div class="row justify-content-center mb-3">
+            <button type="submit" class="btn btn-primary col-1 m-2">Evet</button>
+            <a class="btn btn-primary col-1 m-2" asp-controller="Home" asp-action="All">Hayır</a>
+        </div>
+    </form>
+</div>

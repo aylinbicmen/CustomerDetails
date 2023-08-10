@@ -1,0 +1,84 @@
+﻿@using CustomerDetails.Data.db;
+@{
+    ViewData["Title"] = "Müşteri Detay";
+
+    Customer customer = ViewBag.Customer;
+
+    string addressType; //try-catch ile null exception kontrol edilir null exception gelmesi durumunda addressType'a boş değer atanır. Veritabanında bulunmayan bir değer olduğu için veri olmayan alanlar boş kalır.
+
+    try
+    {
+        addressType = customer.AddressType.Type;
+    }
+    catch (Exception)
+    {
+
+        addressType = "";
+    }
+}
+
+<style>
+    .pHeight{
+        height: 40px;
+    }
+</style>
+
+<h1>Müşteri Detayları</h1>
+<hr />
+
+<div class="row container">
+    <div class="col-md-6 mb-1">
+        <label for="name" class="form-label fw-bold">Ad</label>
+        <p class="form-control pHeight" id="Name" name="Name">@customer.Name</p>
+    </div>
+    <div class="col-md-6 mb-1">
+        <label for="surname" class="form-label fw-bold">Soyad</label>
+        <p class="form-control pHeight" id="Surname" name="Surname">@customer.Surname</p>
+    </div>
+    <div class="col-md-6 mb-1">
+        <label for="email" class="form-label fw-bold">E-posta Adresi</label>
+        <p class="form-control pHeight" id="Email" name="Email">@customer.Email</p>
+    </div>
+    <div class="col-md-6 mb-1">
+        <label for="phone" class="form-label fw-bold">Telefon Numarası</label>
+        <p class="form-control pHeight" id="Phone" name="Phone">@customer.Phone</p>
+    </div>
+    <div class="col-md-12 mb-1">
+        <label for="birtdate" class="form-label fw-bold">Doğum Tarihi</label>
+        <p class="form-control pHeight" id="BirthDate" name="BirthDate">@customer.BirthDate.Date.ToString("dd-MM-yyyy")</p>
+    </div>
+    <div class="col-md-12 mb-1">
+        <label for="address" class="form-label fw-bold">Adres</label>
+        <p class="form-control pHeight" id="Address" name="Address">@customer.Address</p>
+    </div>
+    <div class="col-md-10 mb-1">
+        <label for="addresstype" class="form-label fw-bold">Adres Tipi</label>
+        <p class="form-control pHeight" id="AddressTypeId" name="AddressTypeId">@addressType</p>
+    </div>
+    <div class="col-md-2 mb-1">
+        <label for="active" class="form-label fw-bold">Aktif</label>
+        @if (customer.IsActive == true)
+        {
+            <p class="form-control pHeight" id="IsActive" name="IsActive">Evet</p>
+        }
+        else
+        {
+            <p class="form-control pHeight" id="IsActive" name="IsActive">Hayır</p>
+        }
+    </div>
+    <div class="col-md-12 mb-1">
+        <label for="identityno" class="form-label fw-bold">TC Kimlik No</label>
+        <p type="text" class="form-control pHeight" id="IdentityNo" name="IdentityNo">@customer.IdentityNo</p>
+    </div>
+    <div class="col-md-6 mb-1">
+        <label for="taxno" class="form-label fw-bold">Vergi No</label>
+        <p type="text" class="form-control pHeight" id="TaxNo" name="TaxNo">@customer.TaxNo</p>
+    </div>
+    <div class="col-md-6 mb-1">
+        <label for="taxoffice" class="form-label fw-bold">Vergi Dairesi</label>
+        <p type="text" class="form-control pHeight" id="TaxOffice" name="TaxOffice">@customer.TaxOffice</p>
+    </div>
+    <div class="row justify-content-center m-1">
+        <a type="button" class="btn btn-primary col-2 m-2" asp-controller="Home" asp-action="All">Geri Git</a>
+    </div>
+</div>
